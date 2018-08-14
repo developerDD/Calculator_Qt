@@ -1,2 +1,3 @@
 Hey. My friend asked me to write a program for a course on programming.
 This program is not commercial.
+Material was taken from a book Qt 5.3. Professional programming in C ++
