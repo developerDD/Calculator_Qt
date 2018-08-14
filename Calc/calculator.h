@@ -3,9 +3,10 @@
 
 #include <QWidget>
 #include <QStack>
+#include<QLCDNumber>
+#include<QGridLayout>
+#include<QPushButton>
 
-class QLCDNumber;
-class QPushButton;
 
 class Calculator : public QWidget
 {
@@ -17,9 +18,11 @@ private:
 public:
     Calculator(QWidget *parent = nullptr);
     QPushButton* createButton(const QString& str);
-    ~Calculator();
+    void calculate();
+
 public slots:
     void slotButtonClicked ();
 };
+
 
 #endif // CALCULATOR_H
