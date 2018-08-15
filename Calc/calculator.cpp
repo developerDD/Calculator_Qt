@@ -6,7 +6,6 @@ Calculator::Calculator(QWidget *parent)
     m_plcd = new QLCDNumber(12);
     m_plcd->setSegmentStyle(QLCDNumber::Flat);
     m_plcd->setMinimumSize(150,50);
-   // QString Buttons [16] = {"7","8","9","/","4","5","6","*","1","2","3","-","0",".","=","+"};
     QChar aButtons[4][4] = {
         {'7','8','9','/'},
         {'4','5','6','*'},
@@ -15,7 +14,7 @@ Calculator::Calculator(QWidget *parent)
     };
     QGridLayout* ptopLayout = new QGridLayout;
     ptopLayout->addWidget(m_plcd,0,0,1,4);
-     ptopLayout->addWidget(createButton("CE"), 1, 3);
+    ptopLayout->addWidget(createButton("CE"), 1, 3);
     for (int i =0;i<4;++i)
     {
         for (int j =0;j<4;++j)
@@ -66,7 +65,8 @@ void Calculator::slotButtonClicked()
         m_plcd->display("0");
         return;
     }
-    if (str.contains(QRegExp("[0-9]"))) {
+    if (str.contains(QRegExp("[0-9]")))
+    {
         str = QString().setNum(m_plcd->value()) + str;
         m_plcd->display(str.toDouble());
     }
@@ -76,7 +76,6 @@ void Calculator::slotButtonClicked()
     }
     else if (m_stk.count() >= 2)
     {
-
         {
             m_stk.push(QString().setNum(m_plcd->value()));
             calculate();
@@ -85,7 +84,7 @@ void Calculator::slotButtonClicked()
         }
          if (str != "=")
         {
-                m_stk.push(str);
+            m_stk.push(str);
         }
     }
    else {
