@@ -3,9 +3,24 @@
 Calculator::Calculator(QWidget *parent)
     : QWidget(parent)
 {
-    m_plcd = new QLCDNumber(12);
-    m_plcd->setSegmentStyle(QLCDNumber::Flat);
+    //m_plcd = new QLCDNumber(12);
+    //m_plcd->setSegmentStyle(QLCDNumber::Flat);
+    m_plcd = new QLabel("0");
+
+    QFont font = m_plcd->font();
+    font.setPixelSize(32);
+    m_plcd->setFont(font);
+    m_plcd->setStyleSheet("QLabel {"
+                          "border-style: solid;"
+                          "border-width: 2px;"
+                          "border-color: black; "
+                          "}");
+
+    m_plcd->setAlignment(Qt::AlignRight);
+
+
     m_plcd->setMinimumSize(150,50);
+
     QChar aButtons[4][4] = {
         {'7','8','9','/'},
         {'4','5','6','*'},
@@ -15,6 +30,8 @@ Calculator::Calculator(QWidget *parent)
     QGridLayout* ptopLayout = new QGridLayout;
     ptopLayout->addWidget(m_plcd,0,0,1,4);
     ptopLayout->addWidget(createButton("CE"), 1, 3);
+    ptopLayout->addWidget(createButton("("), 1, 1);
+    ptopLayout->addWidget(createButton(")"), 1, 2);
     for (int i =0;i<4;++i)
     {
         for (int j =0;j<4;++j)
@@ -51,7 +68,7 @@ void Calculator::calculate()
     if (strOperation == "*") {
         dResult = dOperand1 * dOperand2;
     }
-    m_plcd->display(dResult);
+    m_plcd->setNum(dResult);
 }
 // ----------------------------------------------------------------------
 
@@ -61,11 +78,12 @@ void Calculator::slotButtonClicked()
 {
     if(((QPushButton*)sender())->text()=="CE")
     {
-        m_plcd->display("0");
+        m_plcd->setText("0");
         m_strDisplay="";
         return;
     }
-    m_strDisplay += ((QPushButton*)sender())->text();
+    //m_strDisplay += ((QPushButton*)sender())->text();
+    QString str = ((QPushButton*)sender())->text();
     /*if (str == "CE") {
         m_stk.clear();
         m_plcd->display("0");
@@ -99,7 +117,7 @@ void Calculator::slotButtonClicked()
             m_plcd->display(0);
         }*/
 
-       m_plcd->display(m_strDisplay);
+       m_plcd->setText(/*m_strDisplay*/str);
 
        //=====================================================
        // добавил привидение к обратной польской записи выражения
