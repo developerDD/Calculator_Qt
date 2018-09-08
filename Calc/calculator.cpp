@@ -83,8 +83,11 @@ void Calculator::slotButtonClicked()
         return;
     }
     //m_strDisplay += ((QPushButton*)sender())->text();
-    m_strDisplay += ((QPushButton*)sender())->text();
-    /*if (str == "CE") {
+    if(((QPushButton*)sender())->text()!="="){
+        m_strDisplay += ((QPushButton*)sender())->text();
+        m_plcd->setText(m_strDisplay);
+    }
+        /*if (str == "CE") {
         m_stk.clear();
         m_plcd->display("0");
         return;
@@ -117,14 +120,16 @@ void Calculator::slotButtonClicked()
             m_plcd->display(0);
         }*/
 
-       m_plcd->setText(m_strDisplay);
+
 
        //=====================================================
        // добавил привидение к обратной польской записи выражения
-       /*
+    if(((QPushButton*)sender())->text()=="=")
+    {
     QVector <QChar> vux;
     QStack<QChar> oper;
-    QString str = m_strDisplay;
+    QStack <int> num;
+    QString str = m_strDisplay ;
     for (int i =0;i<str.size();++i)
     {
         if(str[i]==")")
@@ -200,7 +205,7 @@ void Calculator::slotButtonClicked()
                 {
                     while (!num.isEmpty()) {
                         num.pop();
-                        qDebug()<<"/0";
+                        m_plcd->setText("/0");
                     }
                 }
 
@@ -216,8 +221,9 @@ void Calculator::slotButtonClicked()
     }
 
 
-*/
 
+m_plcd->setText(QString::number(num.pop()));
+    }
 }
 
 
