@@ -6,13 +6,14 @@
 #include<QLCDNumber>
 #include<QGridLayout>
 #include<QPushButton>
+#include <QLabel>
 
 
 class Calculator : public QWidget
 {
     Q_OBJECT
 private:
-    QLCDNumber* m_plcd;
+    QLabel* m_plcd;
     QStack<QString> m_stk;
     QString m_strDisplay;
 public:

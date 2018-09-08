@@ -83,7 +83,7 @@ void Calculator::slotButtonClicked()
         return;
     }
     //m_strDisplay += ((QPushButton*)sender())->text();
-    QString str = ((QPushButton*)sender())->text();
+    m_strDisplay += ((QPushButton*)sender())->text();
     /*if (str == "CE") {
         m_stk.clear();
         m_plcd->display("0");
@@ -117,7 +117,7 @@ void Calculator::slotButtonClicked()
             m_plcd->display(0);
         }*/
 
-       m_plcd->setText(/*m_strDisplay*/str);
+       m_plcd->setText(m_strDisplay);
 
        //=====================================================
        // добавил привидение к обратной польской записи выражения
@@ -175,7 +175,45 @@ void Calculator::slotButtonClicked()
         vux.push_back(oper.pop());
     }
 
+    //Вычисление выражения  обратной польской записи
 
+    for (int i =0; i<vux.size();++i)
+    {
+
+        if(vux[i]=='-'||vux[i]=='+'||vux[i]=='*'||vux[i]=='/')
+        {
+            int oper2 = num.pop();
+            int oper1 = num.pop();
+            if(vux[i]=='+'){
+                num.push(oper1+oper2);
+            }
+            if(vux[i]=='-'){
+                num.push(oper1-oper2);
+            }
+            if(vux[i]=='*'){
+                num.push(oper1*oper2);
+            }
+            if(vux[i]=='/'){
+                if(oper2!=0){
+                    num.push(oper1/oper2);
+                }else
+                {
+                    while (!num.isEmpty()) {
+                        num.pop();
+                        qDebug()<<"/0";
+                    }
+                }
+
+            }
+
+        }else
+        {
+            QChar x = vux[i];
+            num.push( x.digitValue());
+        }
+
+
+    }
 
 
 */
