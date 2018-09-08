@@ -59,8 +59,14 @@ void Calculator::calculate()
 
 void Calculator::slotButtonClicked()
 {
-    QString str = ((QPushButton*)sender())->text();
-    if (str == "CE") {
+    if(((QPushButton*)sender())->text()=="CE")
+    {
+        m_plcd->display("0");
+        m_strDisplay="";
+        return;
+    }
+    m_strDisplay += ((QPushButton*)sender())->text();
+    /*if (str == "CE") {
         m_stk.clear();
         m_plcd->display("0");
         return;
@@ -91,7 +97,71 @@ void Calculator::slotButtonClicked()
             m_stk.push(QString().setNum(m_plcd->value()));
             m_stk.push(str);
             m_plcd->display(0);
+        }*/
+
+       m_plcd->display(m_strDisplay);
+
+       //=====================================================
+       // добавил привидение к обратной польской записи выражения
+       /*
+    QVector <QChar> vux;
+    QStack<QChar> oper;
+    QString str = m_strDisplay;
+    for (int i =0;i<str.size();++i)
+    {
+        if(str[i]==")")
+        {
+            while (oper.top()!="("){
+                vux.push_back(oper.pop());
+            }
+            if(oper.top()=="(")
+            {
+                oper.pop();
+            }
+            continue;
         }
+        if(str[i]=="("||str[i]=="-"||str[i]=="+"||str[i]=="*"||str[i]=="/")
+        {
+            if(oper.isEmpty())
+            {
+                oper.push(str[i]);
+                continue;
+            }
+            if(oper.top()=="+" && str[i]=="*" || oper.top()=="-" && str[i]=="/"||
+               oper.top()=="-" && str[i]=="*" || oper.top()=="+" && str[i]=="/"||
+               str[i]=="("||oper.top()=="(" )
+            {
+                oper.push(str[i]);
+                continue;
+            }
+            if(oper.top()=="*" && str[i]=="+" || oper.top()=="/" && str[i]=="-"||
+               oper.top()=="*" && str[i]=="-" || oper.top()=="/" && str[i]=="+")
+            {
+                vux.push_back(oper.pop());
+            }
+            if(oper.top()=="+"&& str[i]=="+"|| oper.top()=="+"&& str[i]=="-"||
+               oper.top()=="-"&& str[i]=="+"|| oper.top()=="-"&& str[i]=="-"||
+               oper.top()=="*"&& str[i]=="/" ||oper.top()=="/"&& str[i]=="*")
+            {
+                vux.push_back(oper.pop());
+                oper.push(str[i]);
+            }
+        }
+       else
+        {
+           vux.push_back(str[i]);
+        }
+    }
+    while(!oper.isEmpty())
+    {
+        vux.push_back(oper.pop());
+    }
+
+
+
+
+*/
+
 }
 
 
