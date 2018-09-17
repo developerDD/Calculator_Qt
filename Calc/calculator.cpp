@@ -130,8 +130,13 @@ void Calculator::slotButtonClicked()
     QStack<QChar> oper;
     QStack <int> num;
     QString str = m_strDisplay ;
+    // доработать с числами больше 9 возможно отдельть зяпятой и потом віделяь число
     for (int i =0;i<str.size();++i)
     {
+        if(str[i]=="-"||str[i]=="+"||str[i]=="*"||str[i]=="/") // добавил разделитель для числа
+        {
+            vux.push_back(',');
+        }
         if(str[i]==")")
         {
             while (oper.top()!="("){
@@ -150,6 +155,7 @@ void Calculator::slotButtonClicked()
                 oper.push(str[i]);
                 continue;
             }
+
             if(oper.top()=="+" && str[i]=="*" || oper.top()=="-" && str[i]=="/"||
                oper.top()=="-" && str[i]=="*" || oper.top()=="+" && str[i]=="/"||
                str[i]=="("||oper.top()=="(" )
@@ -180,50 +186,55 @@ void Calculator::slotButtonClicked()
         vux.push_back(oper.pop());
     }
 
-    //Вычисление выражения  обратной польской записи
+//    //Вычисление выражения  обратной польской записи
 
-    for (int i =0; i<vux.size();++i)
+//    for (int i =0; i<vux.size();++i)
+//    {
+
+//        if(vux[i]=='-'||vux[i]=='+'||vux[i]=='*'||vux[i]=='/')
+//        {
+//            int oper2 = num.pop();
+//            int oper1 = num.pop();
+//            if(vux[i]=='+'){
+//                num.push(oper1+oper2);
+//            }
+//            if(vux[i]=='-'){
+//                num.push(oper1-oper2);
+//            }
+//            if(vux[i]=='*'){
+//                num.push(oper1*oper2);
+//            }
+//            if(vux[i]=='/'){
+//                if(oper2!=0){
+//                    num.push(oper1/oper2);
+//                }else
+//                {
+//                    while (!num.isEmpty()) {
+//                        num.pop();
+//                        m_plcd->setText("/0");
+//                    }
+//                    break;
+//                }
+
+//            }
+
+//        }else
+//        {
+//            QChar x = vux[i];
+//            num.push( x.digitValue());
+//        }
+
+
+//    }
+    m_strDisplay="";
+    for(int i = 0;i< vux.size();i++)
     {
-
-        if(vux[i]=='-'||vux[i]=='+'||vux[i]=='*'||vux[i]=='/')
-        {
-            int oper2 = num.pop();
-            int oper1 = num.pop();
-            if(vux[i]=='+'){
-                num.push(oper1+oper2);
-            }
-            if(vux[i]=='-'){
-                num.push(oper1-oper2);
-            }
-            if(vux[i]=='*'){
-                num.push(oper1*oper2);
-            }
-            if(vux[i]=='/'){
-                if(oper2!=0){
-                    num.push(oper1/oper2);
-                }else
-                {
-                    while (!num.isEmpty()) {
-                        num.pop();
-                        m_plcd->setText("/0");
-                    }
-                }
-
-            }
-
-        }else
-        {
-            QChar x = vux[i];
-            num.push( x.digitValue());
-        }
-
-
+        m_strDisplay+=vux[i];
     }
 
-
-
-m_plcd->setText(QString::number(num.pop()));
+m_plcd->setText(m_strDisplay);
     }
+
 }
 
 

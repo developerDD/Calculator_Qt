@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QStack>
-#include<QLCDNumber>
 #include<QGridLayout>
 #include<QPushButton>
 #include <QLabel>
