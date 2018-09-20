@@ -126,111 +126,134 @@ void Calculator::slotButtonClicked()
        // добавил привидение к обратной польской записи выражения
     if(((QPushButton*)sender())->text()=="=")
     {
-    QVector <QChar> vux;
-    QStack<QChar> oper;
-    QStack <int> num;
-    QString str = m_strDisplay ;
-    // доработать с числами больше 9 возможно отдельть зяпятой и потом віделяь число
-    for (int i =0;i<str.size();++i)
-    {
-        if(str[i]=="-"||str[i]=="+"||str[i]=="*"||str[i]=="/") // добавил разделитель для числа
+        QString bufer="";
+        QVector <QString> str_V;
+        QStack<QString> oper; QVector <QString> vux;
+        QString str = m_strDisplay;
+        //преобразование строки в вектор строк (для парсинга чисел из строки)
+        for(int i =0; i<str.size();i++)
         {
-            vux.push_back(',');
-        }
-        if(str[i]==")")
-        {
-            while (oper.top()!="("){
-                vux.push_back(oper.pop());
-            }
-            if(oper.top()=="(")
+
+            if(str[i].isNumber())
             {
-                oper.pop();
+                bufer+=str[i];
             }
-            continue;
-        }
-        if(str[i]=="("||str[i]=="-"||str[i]=="+"||str[i]=="*"||str[i]=="/")
-        {
-            if(oper.isEmpty())
+            else
             {
-                oper.push(str[i]);
+                if(!bufer.isEmpty())
+                {
+                    str_V.append(bufer);
+                    bufer.clear();
+                }
+                    str_V.append(QString::value_type(str[i]));
+            }
+            if(!bufer.isEmpty()&&i==str.size()-1)
+            {
+                str_V.append(bufer);
+                bufer.clear();
+            }
+        }
+        //===================================================================
+
+        //преобразование в обратную польскую запись
+
+        //===================================================================
+
+        foreach (QString elem, str_V) {
+
+            if(elem==")")
+            {
+                while (oper.top()!="("){
+                    vux.push_back(oper.pop());
+                }
+                if(oper.top()=="(")
+                {
+                    oper.pop();
+                }
                 continue;
             }
+            if(elem=="("||elem=="-"||elem=="+"||elem=="*"||elem=="/")
+            {
+                if(oper.isEmpty())
+                {
+                    oper.push(elem);
+                    continue;
+                }
+                if((oper.top()=="+" && elem=="*") || (oper.top()=="-" && elem=="/")||
+                   (oper.top()=="-" && elem=="*") || (oper.top()=="+" && elem=="/")||
+                   elem=="("||oper.top()=="(" )
+                {
+                    oper.push(elem);
+                    continue;
+                }
+                if((oper.top()=="*" && elem=="+")|| (oper.top()=="/" && elem=="-")||
+                   (oper.top()=="*" && elem=="-")|| (oper.top()=="/" && elem=="+"))
+                {
+                    vux.push_back(oper.pop());
+                }
+                if((oper.top()=="+"&& elem=="+")|| (oper.top()=="+"&& elem=="-")||
+                   (oper.top()=="-"&& elem=="+")|| (oper.top()=="-"&& elem=="-")||
+                   (oper.top()=="*"&& elem=="/")||(oper.top()=="/"&& elem=="*"))
+                {
+                    vux.push_back(oper.pop());
+                    oper.push(elem);
+                }
+            } else
+                {
+                  vux.push_back(elem);
+                }
 
-            if(oper.top()=="+" && str[i]=="*" || oper.top()=="-" && str[i]=="/"||
-               oper.top()=="-" && str[i]=="*" || oper.top()=="+" && str[i]=="/"||
-               str[i]=="("||oper.top()=="(" )
-            {
-                oper.push(str[i]);
-                continue;
-            }
-            if(oper.top()=="*" && str[i]=="+" || oper.top()=="/" && str[i]=="-"||
-               oper.top()=="*" && str[i]=="-" || oper.top()=="/" && str[i]=="+")
-            {
-                vux.push_back(oper.pop());
-            }
-            if(oper.top()=="+"&& str[i]=="+"|| oper.top()=="+"&& str[i]=="-"||
-               oper.top()=="-"&& str[i]=="+"|| oper.top()=="-"&& str[i]=="-"||
-               oper.top()=="*"&& str[i]=="/" ||oper.top()=="/"&& str[i]=="*")
-            {
-                vux.push_back(oper.pop());
-                oper.push(str[i]);
-            }
+
         }
-       else
+
+        while(!oper.isEmpty())
         {
-           vux.push_back(str[i]);
+            vux.push_back(oper.pop());
         }
-    }
-    while(!oper.isEmpty())
-    {
-        vux.push_back(oper.pop());
-    }
+        //===================================================================
 
-//    //Вычисление выражения  обратной польской записи
-
-//    for (int i =0; i<vux.size();++i)
-//    {
-
-//        if(vux[i]=='-'||vux[i]=='+'||vux[i]=='*'||vux[i]=='/')
-//        {
-//            int oper2 = num.pop();
-//            int oper1 = num.pop();
-//            if(vux[i]=='+'){
-//                num.push(oper1+oper2);
-//            }
-//            if(vux[i]=='-'){
-//                num.push(oper1-oper2);
-//            }
-//            if(vux[i]=='*'){
-//                num.push(oper1*oper2);
-//            }
-//            if(vux[i]=='/'){
-//                if(oper2!=0){
-//                    num.push(oper1/oper2);
-//                }else
-//                {
-//                    while (!num.isEmpty()) {
-//                        num.pop();
-//                        m_plcd->setText("/0");
-//                    }
-//                    break;
-//                }
-
-//            }
-
-//        }else
-//        {
-//            QChar x = vux[i];
-//            num.push( x.digitValue());
-//        }
+        //вычисление
+        QStack<int> num;
+        foreach (QString elem, vux) {
 
 
-//    }
-    m_strDisplay="";
-    for(int i = 0;i< vux.size();i++)
-    {
-        m_strDisplay+=vux[i];
-    }
+                   if(elem=='-'||elem=='+'||elem=='*'||elem=='/')
+                   {
+                       int oper2 = num.pop();
+                       int oper1 = num.pop();
+                       if(elem=='+'){
+                           num.push(oper1+oper2);
+                       }
+                       if(elem=='-'){
+                           num.push(oper1-oper2);
+                       }
+                       if(elem=='*'){
+                           num.push(oper1*oper2);
+                       }
+                       if(elem=='/'){
+                           if(oper2!=0){
+                               num.push(oper1/oper2);
+                           }else
+                           {
+                               while (!num.isEmpty()) {
+                                   num.pop();
+                                   m_plcd->setText("Error: /0");
+                               }
+                           }
+
+                       }
+                   }else
+                   {
+                       num.push( elem.toInt());
+                   }
+
+        }
+
+
+    m_strDisplay.clear();
+    m_strDisplay.setNum(num.pop());
+
+
 
 m_plcd->setText(m_strDisplay);
     }

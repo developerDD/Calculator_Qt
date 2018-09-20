@@ -6,7 +6,7 @@
 #include<QGridLayout>
 #include<QPushButton>
 #include <QLabel>
-
+#include <QtAlgorithms>
 
 class Calculator : public QWidget
 {
